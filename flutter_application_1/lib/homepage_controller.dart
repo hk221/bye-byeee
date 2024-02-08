@@ -28,10 +28,7 @@ class HomepageController {
         // Parse received data and update the model
         try {
           var data = jsonDecode(payload);
-          List<String> clothingItems = [];
-          for (var item in data['clothingItems']) {
-            clothingItems.add(item);
-          }
+          List<String> clothingItems = List<String>.from(data['clothingItems']);
           model.setData(clothingItems);
         } catch (e) {
           print('Error parsing data: $e');
