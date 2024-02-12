@@ -1,20 +1,20 @@
 import 'package:flutter_application_1/homepage_model.dart';
+import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'dart:convert';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
-class HomepageController {
+class HomepageController extends GetxController {
   final HomepageModel model = HomepageModel();
   late MqttServerClient client;
 
-  // Function to load data asynchronously
   Future<void> loadData() async {
     model.isLoading.value = true;
     await connectToBroker();
   }
 
   Future<void> connectToBroker() async {
-    client = MqttServerClient('mqtt-dashboard.com', 'myclientid');
+    client = MqttServerClient('mqtt-dashboard.com', 'myclientid2');
     client.logging(on: true);
 
     try {
@@ -35,22 +35,23 @@ class HomepageController {
         messages[0].payload as MqttPublishMessage;
     final String payload =
         MqttPublishPayload.bytesToStringAsString(message.payload.message);
-
+    client.logging(on: true);
     print('Received message: $payload');
 
     try {
       List<String> clothingItems = decodeJson(payload);
       model.setData(clothingItems);
-      model.isLoading.value = false;
     } catch (e) {
       print('Error parsing data: $e');
+    } finally {
+      disconnectFromBroker();
     }
   }
 
-  // Function to decode JSON payload and return list of clothing items
   List<String> decodeJson(String payload) {
     var data = jsonDecode(payload);
     List<String> clothingItems = List<String>.from(data['clothingItems']);
+    print(clothingItems);
     return clothingItems;
   }
 
@@ -61,7 +62,8 @@ class HomepageController {
 
   void resetData() {
     model.isLoading.value = true;
-    model.reset(); 
-    connectToBroker(); 
+    model.reset();
+    connectToBroker();
+    model.isLoading.value = false;
   }
 }
