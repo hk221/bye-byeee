@@ -1,86 +1,67 @@
 import 'package:flutter_application_1/homepage_model.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'dart:convert';
+import 'package:mqtt_client/mqtt_server_client.dart';
 
 class HomepageController {
   final HomepageModel model = HomepageModel();
+  late MqttServerClient client;
 
+  // Function to load data asynchronously
   Future<void> loadData() async {
     model.isLoading.value = true;
-
-    // Connect to the MQTT broker
-    final mqttClient = MqttClient('your_mqtt_broker_url',
-        ''); // Replace 'your_mqtt_broker_url' with the address of your Mosquitto broker
-    mqttClient.port = 1883; // Default MQTT port
-    mqttClient.keepAlivePeriod = 30; // Keep alive period in seconds
-
-    // Listen for messages
-    final clientEvent = mqttClient.updates;
-    clientEvent?.listen((List<MqttReceivedMessage<MqttMessage>>? event) {
-      // Ensure event is not null before accessing its elements
-      if (event != null && event.isNotEmpty) {
-        final MqttPublishMessage receivedMessage =
-            event[0].payload as MqttPublishMessage;
-        final payload = MqttPublishPayload.bytesToStringAsString(
-            receivedMessage.payload.message);
-        print('Received message: $payload');
-
-        // Parse received data and update the model
-        try {
-          var data = jsonDecode(payload);
-          List<String> clothingItems = List<String>.from(data['clothingItems']);
-          model.setData(clothingItems);
-        } catch (e) {
-          print('Error parsing data: $e');
-        }
-      }
-    });
-
-    // Connect to the MQTT broker and subscribe to the topic
-    await mqttClient.connect();
-    mqttClient.subscribe('temperature', MqttQos.atMostOnce);
-
-    // Set isLoading to false after data is loaded
-    model.isLoading.value = false;
+    await connectToBroker();
   }
 
-  // Method to reset data by calling loadData
+  Future<void> connectToBroker() async {
+    client = MqttServerClient('mqtt-dashboard.com', 'myclientid');
+    client.logging(on: true);
+
+    try {
+      await client.connect();
+      print('Connected to MQTT broker');
+
+      client.subscribe('IC.embedded/byebye/', MqttQos.atMostOnce);
+      print('Subscribed to topic IC.embedded/byebye/');
+
+      client.updates?.listen(_onMessageReceived);
+    } catch (e) {
+      print('Error connecting to MQTT broker: $e');
+    }
+  }
+
+  void _onMessageReceived(List<MqttReceivedMessage<MqttMessage>> messages) {
+    final MqttPublishMessage message =
+        messages[0].payload as MqttPublishMessage;
+    final String payload =
+        MqttPublishPayload.bytesToStringAsString(message.payload.message);
+
+    print('Received message: $payload');
+
+    try {
+      List<String> clothingItems = decodeJson(payload);
+      model.setData(clothingItems);
+      model.isLoading.value = false;
+    } catch (e) {
+      print('Error parsing data: $e');
+    }
+  }
+
+  // Function to decode JSON payload and return list of clothing items
+  List<String> decodeJson(String payload) {
+    var data = jsonDecode(payload);
+    List<String> clothingItems = List<String>.from(data['clothingItems']);
+    return clothingItems;
+  }
+
+  void disconnectFromBroker() {
+    client.disconnect();
+    print('Disconnected from MQTT broker');
+  }
+
   void resetData() {
-    loadData();
+    model.isLoading.value = true;
+    model.reset(); 
+    connectToBroker(); 
   }
 }
-
-
-
-/*import 'package:flutter_application_1/homepage_model.dart';
-
-class HomepageController {
-  final HomepageModel model = HomepageModel();
-
-  Future<void> loadData() async {
-    model.isLoading.value = true;
-    
-    // Simulate fetching data from a server
-    List<String> clothingItems = ['hat', 'jacket', 'top', 'bottom'];
-    
-    // Set data in the model
-    model.setData(clothingItems);
-    
-    model.isLoading.value = false;
-  }
-}
-}*/
-
-/*import 'package:flutter_application_1/homepage_model.dart';
-
-class HomepageController {
-  final HomepageModel model = HomepageModel();
-
-  Future<void> loadData() async {
-    model.isLoading.value = true;
-    
-    //model.setData(hat, jacket, top, bottom)
-    model.isLoading.value = false;
-  }
-}*/
-

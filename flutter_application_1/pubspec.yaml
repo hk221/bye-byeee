@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  mqtt_client: ^9.0.0-nullsafety.0
+  mqtt_client: ^10.0.3
 
 
 
@@ -63,10 +63,13 @@ flutter:
   uses-material-design: true
   assets:
     - assets/main avatar.png
-    - assets/wooly hat.png
+    - assets/woolyhat.png
     - assets/tshirt.png
     - assets/shorts.png
-    - assets/flip flops.png
+    - assets/flipflops.png
+    - assets/trousers.png
+    - assets/hoodie.png
+    - assets/trainers.png
 
 
   # To add assets to your application, add an assets section, like this:

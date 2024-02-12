@@ -16,7 +16,6 @@ class HomepageView extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              // Call the resetData method when the button is pressed
               controller.resetData();
             },
           ),
@@ -32,45 +31,16 @@ class HomepageView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.asset(
-                      controller.model.hatPath.value,
-                      fit: BoxFit.contain,
+                for (var item in controller.model.clothingItems)
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: Image.asset(
+                        controller.model.assetPathMap[item]!,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 20), // Add spacing between images
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.asset(
-                      controller.model.jacketPath.value,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20), // Add spacing between images
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.asset(
-                      controller.model.topPath.value,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20), // Add spacing between images
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.asset(
-                      controller.model.bottomPath.value,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
               ],
             ),
           );
