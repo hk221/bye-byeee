@@ -9,17 +9,12 @@ class HomepageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Call loadData when the view is built
+    controller.loadData();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Clothing Suggestions'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () {
-              controller.resetData();
-            },
-          ),
-        ],
       ),
       body: Obx(() {
         if (controller.model.isLoading.value) {
@@ -31,21 +26,50 @@ class HomepageView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                for (var item in controller.model.clothingItems)
-                  Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: Image.asset(
-                        controller.model.assetPathMap[item]!,
-                        fit: BoxFit.contain,
-                      ),
+                Expanded(
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Image.asset(
+                      controller.model.hatPath.value, // RxString reference
+                      fit: BoxFit.contain,
                     ),
                   ),
+                ),
+                SizedBox(height: 20), // Add spacing between images
+                Expanded(
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: _buildImage(controller.model.hot_shoesPath.value),
+                  ),
+                ),
+                SizedBox(height: 20), // Add spacing between images
+                Expanded(
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: _buildImage(controller.model.coldtopPath.value),
+                  ),
+                ),
+                SizedBox(height: 20), // Add spacing between images
+                Expanded(
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: _buildImage(controller.model.hot_bottomPath.value),
+                  ),
+                ),
               ],
             ),
           );
         }
       }),
     );
+  }
+
+  Widget _buildImage(String imagePath) {
+    return imagePath.isNotEmpty
+        ? Image.asset(
+            imagePath,
+            fit: BoxFit.contain,
+          )
+        : Placeholder(); // Placeholder image for empty paths
   }
 }

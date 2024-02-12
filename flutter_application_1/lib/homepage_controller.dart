@@ -35,29 +35,46 @@ class HomepageController extends GetxController {
         messages[0].payload as MqttPublishMessage;
     final String payload =
         MqttPublishPayload.bytesToStringAsString(message.payload.message);
-    client.logging(on: true);
+
     print('Received message: $payload');
 
     try {
-      List<String> clothingItems = decodeJson(payload);
-      model.setData(clothingItems);
+      if (payload != null && payload.isNotEmpty) {
+        List<String> clothingItems = decodeJson(payload);
+        model.setData(clothingItems);
+      } else {
+        print('Error: Empty or null payload received');
+      }
     } catch (e) {
       print('Error parsing data: $e');
     } finally {
+      // Disconnect from the broker after processing the message
       disconnectFromBroker();
+      print('Disconnected from broker');
     }
   }
 
   List<String> decodeJson(String payload) {
-    var data = jsonDecode(payload);
-    List<String> clothingItems = List<String>.from(data['clothingItems']);
-    print(clothingItems);
-    return clothingItems;
+    try {
+      var data = jsonDecode(payload);
+      if (data != null && data is Map<String, dynamic>) {
+        List<String> clothingItems = data.values.cast<String>().toList();
+        print(clothingItems);
+        return clothingItems;
+      } else {
+        throw FormatException('Invalid JSON format');
+      }
+    } catch (e) {
+      print('Error decoding JSON: $e');
+      return [];
+    }
   }
 
   void disconnectFromBroker() {
     client.disconnect();
     print('Disconnected from MQTT broker');
+    model.isLoading.value = false;
+
   }
 
   void resetData() {
