@@ -1,3 +1,4 @@
+import 'dart:async'; // Import dart:async for Timer
 import 'package:flutter_application_1/homepage_model.dart';
 import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -7,6 +8,33 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 class HomepageController extends GetxController {
   final HomepageModel model = HomepageModel();
   late MqttServerClient client;
+  late Timer _timer; // Add a Timer variable
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Start the initial load data process
+    loadData();
+    // Start the periodic resubscription timer
+    _startResubscriptionTimer();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    // Cancel the timer when the controller is closed
+    _timer.cancel();
+  }
+
+  // Method to start the periodic resubscription timer
+  void _startResubscriptionTimer() {
+    const duration =
+        const Duration(seconds: 30); // Set the duration to 30 seconds
+    _timer = Timer.periodic(duration, (_) {
+      // Call the connectToBroker method to resubscribe every 30 seconds
+      connectToBroker();
+    });
+  }
 
   Future<void> loadData() async {
     model.isLoading.value = true;
@@ -40,8 +68,10 @@ class HomepageController extends GetxController {
 
     try {
       if (payload != null && payload.isNotEmpty) {
+        // Ensure that the payload is explicitly typed as a list of strings
         List<String> clothingItems = decodeJson(payload);
-        model.setData(clothingItems);
+        model.setData(
+            clothingItems, model.assetPathMap); // Pass assetPathMap to setData
       } else {
         print('Error: Empty or null payload received');
       }
@@ -71,10 +101,9 @@ class HomepageController extends GetxController {
   }
 
   void disconnectFromBroker() {
+    model.isLoading.value = false;
     client.disconnect();
     print('Disconnected from MQTT broker');
-    model.isLoading.value = false;
-
   }
 
   void resetData() {

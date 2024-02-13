@@ -14,7 +14,17 @@ class HomepageView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Clothing Suggestions'),
+        title: Text('Clothing suggestions'),
+        actions: [
+          // Add refresh button
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              // Call loadData again when refresh button is pressed
+              controller.loadData();
+            },
+          ),
+        ],
       ),
       body: Obx(() {
         if (controller.model.isLoading.value) {
@@ -26,34 +36,52 @@ class HomepageView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // Display Hat or Jacket
                 Expanded(
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.asset(
-                      controller.model.hatPath.value, // RxString reference
+                      controller.model.hatPath.value.isNotEmpty
+                          ? controller.model.hatPath.value
+                          : controller.model.nohatPath.value,
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
-                SizedBox(height: 20), // Add spacing between images
+                // Display Cold Top
                 Expanded(
                   child: AspectRatio(
                     aspectRatio: 1,
-                    child: _buildImage(controller.model.hot_shoesPath.value),
+                    child: Image.asset(
+                      controller.model.coldtopPath.value.isNotEmpty
+                          ? controller.model.coldtopPath.value
+                          : controller.model.jacketPath.value,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
-                SizedBox(height: 20), // Add spacing between images
+                // Display Hot Bottom or Cold Bottom
                 Expanded(
                   child: AspectRatio(
                     aspectRatio: 1,
-                    child: _buildImage(controller.model.coldtopPath.value),
+                    child: Image.asset(
+                      controller.model.hotbottomPath.value.isNotEmpty
+                          ? controller.model.hotbottomPath.value
+                          : controller.model.coldbottomPath.value,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
-                SizedBox(height: 20), // Add spacing between images
+                // Display Hot Shoes or Cold Shoes
                 Expanded(
                   child: AspectRatio(
                     aspectRatio: 1,
-                    child: _buildImage(controller.model.hot_bottomPath.value),
+                    child: Image.asset(
+                      controller.model.hotshoesPath.value.isNotEmpty
+                          ? controller.model.hotshoesPath.value
+                          : controller.model.coldshoesPath.value,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ],
@@ -62,14 +90,5 @@ class HomepageView extends StatelessWidget {
         }
       }),
     );
-  }
-
-  Widget _buildImage(String imagePath) {
-    return imagePath.isNotEmpty
-        ? Image.asset(
-            imagePath,
-            fit: BoxFit.contain,
-          )
-        : Placeholder(); // Placeholder image for empty paths
   }
 }

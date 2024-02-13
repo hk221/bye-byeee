@@ -6,20 +6,22 @@ class HomepageModel {
     'hat': 'assets/woolyhat.png',
     'jacket': 'assets/hoodie.png',
     'coldtop': 'assets/tshirt.png',
-    'hot_bottom': 'assets/trousers.png',
-    'cold_bottom': 'assets/shorts.png',
-    'hot_shoes': 'assets/trainers.png',
-    'cold_shoes': 'assets/flipflops.png',
+    'hotbottom': 'assets/trousers.png',
+    'coldbottom': 'assets/shorts.png',
+    'hotshoes': 'assets/trainers.png',
+    'coldshoes': 'assets/flipflops.png',
+    'nohat': 'assets/nohat.png', // Fixed typo here
   };
 
   // RxStrings to store asset paths for each clothing item
   late RxString hatPath;
   late RxString jacketPath;
   late RxString coldtopPath;
-  late RxString hot_bottomPath;
+  late RxString hotbottomPath;
   late RxString coldbottomPath;
-  late RxString hot_shoesPath;
+  late RxString hotshoesPath;
   late RxString coldshoesPath;
+  late RxString nohatPath;
 
   RxBool isLoading = true.obs;
 
@@ -28,66 +30,60 @@ class HomepageModel {
     hatPath = ''.obs;
     jacketPath = ''.obs;
     coldtopPath = ''.obs;
-    hot_bottomPath = ''.obs;
+    hotbottomPath = ''.obs;
     coldbottomPath = ''.obs;
-    hot_shoesPath = ''.obs;
+    hotshoesPath = ''.obs;
     coldshoesPath = ''.obs;
-  }
-  List<String> clothingItems = [];
-  void reset() {
-    clothingItems.clear();
+    nohatPath = ''.obs;
   }
 
-  // Method to set data for clothing items
-  // Method to set data for clothing items
-  void setData(List<String> clothingItems) {
-    // Reset all paths
+  void reset() {
     hatPath.value = '';
     jacketPath.value = '';
     coldtopPath.value = '';
-    hot_bottomPath.value = '';
+    hotbottomPath.value = '';
     coldbottomPath.value = '';
-    hot_shoesPath.value = '';
+    hotshoesPath.value = '';
     coldshoesPath.value = '';
+    nohatPath.value = '';
+  }
 
-    // Assign asset paths based on the provided list of clothing items
-    for (var item in clothingItems) {
-      if (assetPathMap.containsKey(item)) {
-        switch (item) {
-          case 'hat':
-            hatPath.value = assetPathMap[item]!;
-            break;
-          case 'jacket':
-            jacketPath.value = assetPathMap[item]!;
-            break;
-          case 'coldtop':
-            coldtopPath.value = assetPathMap[item]!;
-            break;
-          case 'hot_bottom':
-            hot_bottomPath.value = assetPathMap[item]!;
-            break;
-          case 'cold_bottom':
-            coldbottomPath.value = assetPathMap[item]!;
-            break;
-          case 'hot_shoes':
-            hot_shoesPath.value = assetPathMap[item]!;
-            break;
-          case 'cold_shoes':
-            coldshoesPath.value = assetPathMap[item]!;
-            break;
+  // Method to set data for clothing items
+  void setData(List<String> clothingItems, Map<String, String> assetPathMap) {
+  // Reset previous data
+  reset();
+
+  // Assign asset paths based on the provided clothing items
+  for (var item in clothingItems) {
+    if (assetPathMap.containsKey(item)) {
+      switch (item) {
+        case 'hat':
+          hatPath.value = assetPathMap[item]!;
+          break;
+        case 'jacket':
+          jacketPath.value = assetPathMap[item]!;
+          break;
+        case 'coldtop':
+          coldtopPath.value = assetPathMap[item]!;
+          break;
+        case 'hotbottom':
+          hotbottomPath.value = assetPathMap[item]!;
+          break;
+        case 'coldbottom':
+          coldbottomPath.value = assetPathMap[item]!;
+          break;
+        case 'hotshoes':
+          hotshoesPath.value = assetPathMap[item]!;
+          break;
+        case 'coldshoes':
+          coldshoesPath.value = assetPathMap[item]!;
+          break;
+        case 'nohat': // Handle the 'nohat' case
+          nohatPath.value = assetPathMap[item]!;
+          break;
         }
       }
     }
-
-    // Log the assigned paths for debugging
-    print('Hat Path: ${hatPath.value}');
-    print('Jacket Path: ${jacketPath.value}');
-    print('Cold Top Path: ${coldtopPath.value}');
-    print('Hot Bottom Path: ${hot_bottomPath.value}');
-    print('Cold Bottom Path: ${coldbottomPath.value}');
-    print('Hot Shoes Path: ${hot_shoesPath.value}');
-    print('Cold Shoes Path: ${coldshoesPath.value}');
-    
   }
 
 }
