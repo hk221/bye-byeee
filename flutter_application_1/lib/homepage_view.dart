@@ -32,57 +32,98 @@ class HomepageView extends StatelessWidget {
         } else {
           return Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: ListView(
               children: [
-                // Display Hat or Jacket
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.asset(
-                      controller.model.hatPath.value.isNotEmpty
-                          ? controller.model.hatPath.value
-                          : controller.model.nohatPath.value,
-                      fit: BoxFit.contain,
+                // Display Clothing Items and Temperature in a Table
+                Table(
+                  columnWidths: {
+                    0: FlexColumnWidth(1),
+                    1: FlexColumnWidth(1),
+                  },
+                  children: [
+                    TableRow(
+                      children: [
+                        // Display Hat or Jacket
+                        Container(
+                          height: 200, // Adjust height as needed
+                          child: AspectRatio(
+                            aspectRatio: 1,
+                            child: Image.asset(
+                              controller.model.hatPath.value.isNotEmpty
+                                  ? controller.model.hatPath.value
+                                  : controller.model.nohatPath.value,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                        // Display Temperature
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Sensor Readings',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Text('Temperature: ${controller.model.temperature.value}'),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-                // Display Cold Top
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.asset(
-                      controller.model.coldtopPath.value.isNotEmpty
-                          ? controller.model.coldtopPath.value
-                          : controller.model.jacketPath.value,
-                      fit: BoxFit.contain,
+                    TableRow(
+                      children: [
+                        // Display Cold Top
+                        AspectRatio(
+                          aspectRatio: 1,
+                          child: Image.asset(
+                            controller.model.coldtopPath.value.isNotEmpty
+                                ? controller.model.coldtopPath.value
+                                : controller.model.jacketPath.value,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        // Empty cell for alignment
+                        SizedBox(),
+                      ],
                     ),
-                  ),
-                ),
-                // Display Hot Bottom or Cold Bottom
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.asset(
-                      controller.model.hotbottomPath.value.isNotEmpty
-                          ? controller.model.hotbottomPath.value
-                          : controller.model.coldbottomPath.value,
-                      fit: BoxFit.contain,
+                    TableRow(
+                      children: [
+                        // Display Hot Bottom or Cold Bottom
+                        AspectRatio(
+                          aspectRatio: 1,
+                          child: Image.asset(
+                            controller.model.hotbottomPath.value.isNotEmpty
+                                ? controller.model.hotbottomPath.value
+                                : controller.model.coldbottomPath.value,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        // Empty cell for alignment
+                        SizedBox(),
+                      ],
                     ),
-                  ),
-                ),
-                // Display Hot Shoes or Cold Shoes
-                Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: Image.asset(
-                      controller.model.hotshoesPath.value.isNotEmpty
-                          ? controller.model.hotshoesPath.value
-                          : controller.model.coldshoesPath.value,
-                      fit: BoxFit.contain,
+                    TableRow(
+                      children: [
+                        // Display Hot Shoes or Cold Shoes
+                        AspectRatio(
+                          aspectRatio: 1,
+                          child: Image.asset(
+                            controller.model.hotshoesPath.value.isNotEmpty
+                                ? controller.model.hotshoesPath.value
+                                : controller.model.coldshoesPath.value,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        // Empty cell for alignment
+                        SizedBox(),
+                      ],
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),

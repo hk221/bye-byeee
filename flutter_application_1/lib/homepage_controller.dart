@@ -1,4 +1,4 @@
-import 'dart:async'; // Import dart:async for Timer
+import 'dart:async';
 import 'package:flutter_application_1/homepage_model.dart';
 import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -8,7 +8,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 class HomepageController extends GetxController {
   final HomepageModel model = HomepageModel();
   late MqttServerClient client;
-  late Timer _timer; // Add a Timer variable
+  late Timer _timer;
 
   @override
   void onInit() {
@@ -28,10 +28,8 @@ class HomepageController extends GetxController {
 
   // Method to start the periodic resubscription timer
   void _startResubscriptionTimer() {
-    const duration =
-        const Duration(seconds: 30); // Set the duration to 30 seconds
+    const duration = const Duration(seconds: 30);
     _timer = Timer.periodic(duration, (_) {
-      // Call the connectToBroker method to resubscribe every 30 seconds
       connectToBroker();
     });
   }
@@ -59,46 +57,32 @@ class HomepageController extends GetxController {
   }
 
   void _onMessageReceived(List<MqttReceivedMessage<MqttMessage>> messages) {
-    final MqttPublishMessage message =
-        messages[0].payload as MqttPublishMessage;
-    final String payload =
-        MqttPublishPayload.bytesToStringAsString(message.payload.message);
+  final MqttPublishMessage message = messages[0].payload as MqttPublishMessage;
+  final String payload = MqttPublishPayload.bytesToStringAsString(message.payload.message);
 
-    print('Received message: $payload');
+  print('Received message: $payload');
 
-    try {
-      if (payload != null && payload.isNotEmpty) {
-        // Ensure that the payload is explicitly typed as a list of strings
-        List<String> clothingItems = decodeJson(payload);
-        model.setData(
-            clothingItems, model.assetPathMap); // Pass assetPathMap to setData
+  try {
+    if (payload != null && payload.isNotEmpty) {
+      Map<String, dynamic> decodedData = jsonDecode(payload);
+      if (decodedData != null && decodedData.isNotEmpty) {
+        List<String> clothingItems = decodedData.keys.toList();
+        double temperature = double.parse(decodedData['temperature'].toString());
+        model.setData(clothingItems, temperature: temperature);
       } else {
-        print('Error: Empty or null payload received');
+        print('Error: Empty or null decoded data');
       }
-    } catch (e) {
-      print('Error parsing data: $e');
-    } finally {
-      // Disconnect from the broker after processing the message
-      disconnectFromBroker();
-      print('Disconnected from broker');
+    } else {
+      print('Error: Empty or null payload received');
     }
+  } catch (e) {
+    print('Error parsing data: $e');
+  } finally {
+    disconnectFromBroker();
+    print('Disconnected from broker');
   }
+}
 
-  List<String> decodeJson(String payload) {
-    try {
-      var data = jsonDecode(payload);
-      if (data != null && data is Map<String, dynamic>) {
-        List<String> clothingItems = data.values.cast<String>().toList();
-        print(clothingItems);
-        return clothingItems;
-      } else {
-        throw FormatException('Invalid JSON format');
-      }
-    } catch (e) {
-      print('Error decoding JSON: $e');
-      return [];
-    }
-  }
 
   void disconnectFromBroker() {
     model.isLoading.value = false;

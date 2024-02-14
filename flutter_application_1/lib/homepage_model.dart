@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 
 class HomepageModel {
   // Map to store asset paths for each clothing item
@@ -10,7 +11,7 @@ class HomepageModel {
     'coldbottom': 'assets/shorts.png',
     'hotshoes': 'assets/trainers.png',
     'coldshoes': 'assets/flipflops.png',
-    'nohat': 'assets/nohat.png', // Fixed typo here
+    'nohat': 'assets/nohat.png', 
   };
 
   // RxStrings to store asset paths for each clothing item
@@ -22,6 +23,8 @@ class HomepageModel {
   late RxString hotshoesPath;
   late RxString coldshoesPath;
   late RxString nohatPath;
+
+  late RxDouble temperature;
 
   RxBool isLoading = true.obs;
 
@@ -35,6 +38,7 @@ class HomepageModel {
     hotshoesPath = ''.obs;
     coldshoesPath = ''.obs;
     nohatPath = ''.obs;
+    temperature = 0.0.obs;
   }
 
   void reset() {
@@ -46,10 +50,11 @@ class HomepageModel {
     hotshoesPath.value = '';
     coldshoesPath.value = '';
     nohatPath.value = '';
+    temperature.value = 0.0;
   }
 
   // Method to set data for clothing items
-  void setData(List<String> clothingItems, Map<String, String> assetPathMap) {
+  void setData(List<String> clothingItems, {double temperature = 0.0}) {
   // Reset previous data
   reset();
 
@@ -81,9 +86,9 @@ class HomepageModel {
         case 'nohat': // Handle the 'nohat' case
           nohatPath.value = assetPathMap[item]!;
           break;
-        }
       }
     }
   }
-
+  this.temperature.value = temperature; // Use 'this' to refer to the instance variable
+}
 }
