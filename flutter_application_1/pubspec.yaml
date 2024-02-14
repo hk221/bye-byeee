@@ -71,6 +71,8 @@ flutter:
     - assets/hoodie.png
     - assets/trainers.png
     - assets/nohat.png
+    - assets/background_image.jpg
+    - assets/cloud.jpg
 
 
 
