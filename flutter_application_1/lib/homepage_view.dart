@@ -31,7 +31,8 @@ class HomepageView extends StatelessWidget {
             color: Colors.white, // Change the text color to white
           ),
         ),
-        backgroundColor: Color.fromARGB(255, 32, 117, 113), // Change the background color of the app bar
+        backgroundColor: Color.fromARGB(
+            255, 32, 117, 113), // Change the background color of the app bar
         elevation: 0, // Remove the shadow below the app bar
 
         actions: [
@@ -188,127 +189,128 @@ class HomepageView extends StatelessWidget {
 
   Widget _buildClothingItem({required String imagePath}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-            color: Color.fromARGB(255, 32, 117, 113), // Set the border color
-            width: 1.0, // Set the border width
-            ),
-          ),
+        padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: AspectRatio(
           aspectRatio: 1,
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.contain,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color:
+                    Color.fromARGB(255, 32, 117, 113), // Set the border color
+                width: 1.0, // Set the border width
+              ),
+            ),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: Image.asset(
+                imagePath,
+                fit: BoxFit.contain,
+              ),
+            ),
           ),
-        ),
-      ),
-      )
-    );
+        ));
   }
+
   Future<void> addImageToPubspec(String imagePath) async {
-  // Read the current content of the pubspec.yaml file
-  var file = File('pubspec.yaml');
-  var lines = await file.readAsLines();
+    // Read the current content of the pubspec.yaml file
+    var file = File('pubspec.yaml');
+    var lines = await file.readAsLines();
 
-  // Find the index of the assets section in the pubspec.yaml content
-  var assetsIndex = lines.indexWhere((line) => line.trim() == 'assets:');
-  if (assetsIndex != -1) {
-    // Check if the image path already exists in the assets section
-    var imagePathInAssets = lines.indexWhere((line) => line.trim() == '- $imagePath');
-    if (imagePathInAssets == -1) {
-      // Add the new image path to the assets section
-      lines.insert(assetsIndex + 1, '  - $imagePath');
+    // Find the index of the assets section in the pubspec.yaml content
+    var assetsIndex = lines.indexWhere((line) => line.trim() == 'assets:');
+    if (assetsIndex != -1) {
+      // Check if the image path already exists in the assets section
+      var imagePathInAssets =
+          lines.indexWhere((line) => line.trim() == '- $imagePath');
+      if (imagePathInAssets == -1) {
+        // Add the new image path to the assets section
+        lines.insert(assetsIndex + 1, '  - $imagePath');
 
-      // Write the updated content back to the pubspec.yaml file
-      await file.writeAsString(lines.join('\n'));
-      print('Image path added to pubspec.yaml: $imagePath');
+        // Write the updated content back to the pubspec.yaml file
+        await file.writeAsString(lines.join('\n'));
+        print('Image path added to pubspec.yaml: $imagePath');
+      } else {
+        print('Image path already exists in pubspec.yaml: $imagePath');
+      }
     } else {
-      print('Image path already exists in pubspec.yaml: $imagePath');
+      print('assets section not found in pubspec.yaml');
     }
-  } else {
-    print('assets section not found in pubspec.yaml');
-  }
   }
 
   Future<void> _pickAndAddImage(BuildContext context) async {
-  final HomepageController controller = Get.find<HomepageController>();
-  // Pick an image from device
-  FilePickerResult? result =
-      await FilePicker.platform.pickFiles(type: FileType.image);
+    final HomepageController controller = Get.find<HomepageController>();
+    // Pick an image from device
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
 
-  if (result != null) {
-    // Show dialog to select category
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('Select Category'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Center(
-              child: DropdownButton<String>(
-                value: 'hat', // Default category
-                items: [
-                  // Add dropdown or radio buttons to select category
-                  // For simplicity, using a dropdown with hardcoded categories
-                  DropdownMenuItem(
-                    child: const Text('Hat'),
-                    value: 'hat',
-                  ),
-                  DropdownMenuItem(
-                    child: const Text('Cold Top'),
-                    value: 'coldtop',
-                  ),
-                  DropdownMenuItem(
-                    child: const Text('Hot Top'),
-                    value: 'hottop',
-                  ),
-                  DropdownMenuItem(
-                    child: const Text('Cold Bottom'),
-                    value: 'coldbottom',
-                  ),
-                  DropdownMenuItem(
-                    child: const Text('Hot Bottom'),
-                    value: 'hotbottom',
-                  ),
-                  DropdownMenuItem(
-                    child: const Text('Cold Shoes'),
-                    value: 'coldshoes',
-                  ),
-                  DropdownMenuItem(
-                    child: const Text('Hot Shoes'),
-                    value: 'hotshoes',
-                  ),
-                ],
-                onChanged: (String? value) async {
-                  if (value != null) {
-                    // Check if value is not null
-                    // Move the selected image file to the assets folder
-                    String? imagePath = result.files.first.path;
-                    String? assetPath = imagePath != null
-                        ? await controller.addImageToAssets(imagePath)
-                        : null;
-                    if (assetPath != null) {
-                      // Call addImageToPubspec to add the new image path to pubspec.yaml
-                      await addImageToPubspec(assetPath);
+    if (result != null) {
+      // Show dialog to select category
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Select Category'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: DropdownButton<String>(
+                  value: 'hat', // Default category
+                  items: [
+                    // Add dropdown or radio buttons to select category
+                    // For simplicity, using a dropdown with hardcoded categories
+                    DropdownMenuItem(
+                      child: const Text('Hat'),
+                      value: 'hat',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Cold Top'),
+                      value: 'coldtop',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Hot Top'),
+                      value: 'hottop',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Cold Bottom'),
+                      value: 'coldbottom',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Hot Bottom'),
+                      value: 'hotbottom',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Cold Shoes'),
+                      value: 'coldshoes',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Hot Shoes'),
+                      value: 'hotshoes',
+                    ),
+                  ],
+                  onChanged: (String? value) async {
+                    if (value != null) {
+                      // Check if value is not null
+                      // Move the selected image file to the assets folder
+                      String? imagePath = result.files.first.path;
+                      String? assetPath = imagePath != null
+                          ? await controller.addImageToAssets(imagePath)
+                          : null;
+                      if (assetPath != null) {
+                        // Call addImageToPubspec to add the new image path to pubspec.yaml
+                        await addImageToPubspec(assetPath);
 
-                      // Update the assetPathMap with the new image path
-                      controller.addImageToCategory(assetPath, value);
+                        // Update the assetPathMap with the new image path
+                        controller.addImageToCategory(assetPath, value);
+                      }
                     }
-                  }
-                  Navigator.pop(context); // Close the dialog
-                },
+                    Navigator.pop(context); // Close the dialog
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
-}
-
 }
