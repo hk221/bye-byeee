@@ -204,8 +204,10 @@ class HomepageView extends StatelessWidget {
           ),
         ),
       ),
+      )
     );
   }
+  
 
   Future<void> _pickAndAddImage(BuildContext context) async {
     final HomepageController controller = Get.find<HomepageController>();
