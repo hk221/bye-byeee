@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/homepage_controller.dart';
 import 'package:get/get.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter_application_1/homepage_controller.dart';
 
 class HomepageView extends StatelessWidget {
   HomepageView({Key? key}) : super(key: key);
 
-  final HomepageController controller = Get.put(HomepageController());
-
   @override
   Widget build(BuildContext context) {
+    final HomepageController controller = Get.put(HomepageController());
+
     // Call loadData when the view is built
     controller.loadData();
-
+    if (controller.model.assetPathMap.containsKey('hat')) {
+      // Image for hat category has been added
+      print(
+          'Image for hat category has been added: ${controller.model.assetPathMap['hat']}');
+    } else {
+      print('No image found for hat category');
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('ClimaCloset'),
@@ -22,6 +29,13 @@ class HomepageView extends StatelessWidget {
             onPressed: () {
               // Call loadData again when refresh button is pressed
               controller.loadData();
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              // Open file picker to select and add image
+              _pickAndAddImage(context);
             },
           ),
         ],
@@ -80,19 +94,21 @@ class HomepageView extends StatelessWidget {
                                 // Overlaying text
                                 Positioned(
                                   top: 20, // Adjust position vertically
-                                  left: 20, // Adjust position horizontally
+                                  left: (MediaQuery.of(context).size.width -
+                                          375) /
+                                      2, // Center horizontally // Adjust position horizontally
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'Sensor Readings',
+                                        'FASHION FORECAST',
                                         style: const TextStyle(
                                           fontFamily:
                                               'Poppins', // Set font family
                                           fontWeight: FontWeight.bold,
                                           fontSize:
-                                              18, // Adjust font size as needed
+                                              14, // Adjust font size as needed
                                           color:
                                               Colors.blue, // Adjust text color
                                         ),
@@ -108,7 +124,7 @@ class HomepageView extends StatelessWidget {
                                           fontSize:
                                               16, // Adjust font size as needed
                                           color:
-                                              Colors.blue, // Adjust text color
+                                              Colors.black, // Adjust text color
                                         ),
                                       ),
                                     ],
@@ -126,7 +142,7 @@ class HomepageView extends StatelessWidget {
                               child: Image.asset(
                                 controller.model.coldtopPath.value.isNotEmpty
                                     ? controller.model.coldtopPath.value
-                                    : controller.model.jacketPath.value,
+                                    : controller.model.hottopPath.value,
                                 fit: BoxFit.contain,
                               ),
                             ),
@@ -176,5 +192,79 @@ class HomepageView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _pickAndAddImage(BuildContext context) async {
+    final HomepageController controller = Get.find<HomepageController>();
+    // Pick an image from device
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(type: FileType.image);
+
+    if (result != null) {
+      // Show dialog to select category
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('Select Category'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: DropdownButton<String>(
+                  value: 'hat', // Default category
+                  items: [
+                    // Add dropdown or radio buttons to select category
+                    // For simplicity, using a dropdown with hardcoded categories
+                    DropdownMenuItem(
+                      child: const Text('Hat'),
+                      value: 'hat',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Cold Top'),
+                      value: 'coldtop',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Hot Top'),
+                      value: 'hottop',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Cold Bottom'),
+                      value: 'coldbottom',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Hot Bottom'),
+                      value: 'hotbottom',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Cold Shoes'),
+                      value: 'coldshoes',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('Hot Shoes'),
+                      value: 'hotshoes',
+                    ),
+                  ],
+                  onChanged: (String? value) async {
+                    if (value != null) {
+                      // Check if value is not null
+                      // Move the selected image file to the assets folder
+                      String? imagePath = result.files.first.path;
+                      String? assetPath = imagePath != null
+                          ? await controller.addImageToAssets(imagePath)
+                          : null;
+                      if (assetPath != null) {
+                        // Update the assetPathMap with the new image path
+                        controller.addImageToCategory(assetPath, value);
+                      }
+                    }
+                    Navigator.pop(context); // Close the dialog
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 }

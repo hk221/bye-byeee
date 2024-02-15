@@ -5,7 +5,7 @@ class HomepageModel {
   // Map to store asset paths for each clothing item
   Map<String, String> assetPathMap = {
     'hat': 'assets/woolyhat.png',
-    'jacket': 'assets/hoodie.png',
+    'hottop': 'assets/hoodie.png',
     'coldtop': 'assets/tshirt.png',
     'hotbottom': 'assets/trousers.png',
     'coldbottom': 'assets/shorts.png',
@@ -16,7 +16,7 @@ class HomepageModel {
 
   // RxStrings to store asset paths for each clothing item
   late RxString hatPath;
-  late RxString jacketPath;
+  late RxString hottopPath;
   late RxString coldtopPath;
   late RxString hotbottomPath;
   late RxString coldbottomPath;
@@ -31,7 +31,7 @@ class HomepageModel {
   HomepageModel() {
     // Initialize RxStrings
     hatPath = ''.obs;
-    jacketPath = ''.obs;
+    hottopPath = ''.obs;
     coldtopPath = ''.obs;
     hotbottomPath = ''.obs;
     coldbottomPath = ''.obs;
@@ -43,7 +43,7 @@ class HomepageModel {
 
   void reset() {
     hatPath.value = '';
-    jacketPath.value = '';
+    hottopPath.value = '';
     coldtopPath.value = '';
     hotbottomPath.value = '';
     coldbottomPath.value = '';
@@ -65,8 +65,8 @@ class HomepageModel {
         case 'hat':
           hatPath.value = assetPathMap[item]!;
           break;
-        case 'jacket':
-          jacketPath.value = assetPathMap[item]!;
+        case 'hottop':
+          hottopPath.value = assetPathMap[item]!;
           break;
         case 'coldtop':
           coldtopPath.value = assetPathMap[item]!;
