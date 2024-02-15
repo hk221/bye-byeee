@@ -119,7 +119,11 @@ class HomepageController extends GetxController {
           List<String> clothingItems = decodedData.keys.toList();
           double temperature =
               double.parse(decodedData['temperature'].toString());
-          model.setData(clothingItems, temperature: temperature);
+          double humidity = double.parse(
+              decodedData['humidity'].toString()); // Add humidity parsing
+          model.setData(clothingItems,
+              temperature: temperature,
+              humidity: humidity); // Pass humidity to setData
         } else {
           print('Error: Empty or null decoded data');
         }

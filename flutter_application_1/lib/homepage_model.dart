@@ -11,7 +11,7 @@ class HomepageModel {
     'coldbottom': 'assets/shorts.png',
     'hotshoes': 'assets/trainers.png',
     'coldshoes': 'assets/flipflops.png',
-    'nohat': 'assets/nohat.png', 
+    'nohat': 'assets/nohat.png',
   };
 
   // RxStrings to store asset paths for each clothing item
@@ -25,6 +25,7 @@ class HomepageModel {
   late RxString nohatPath;
 
   late RxDouble temperature;
+  late RxDouble humidity;
 
   RxBool isLoading = true.obs;
 
@@ -39,6 +40,7 @@ class HomepageModel {
     coldshoesPath = ''.obs;
     nohatPath = ''.obs;
     temperature = 0.0.obs;
+    humidity = 0.0.obs;
   }
 
   void reset() {
@@ -51,44 +53,48 @@ class HomepageModel {
     coldshoesPath.value = '';
     nohatPath.value = '';
     temperature.value = 0.0;
+    humidity.value = 0.0;
   }
 
   // Method to set data for clothing items
-  void setData(List<String> clothingItems, {double temperature = 0.0}) {
-  // Reset previous data
-  reset();
+  void setData(List<String> clothingItems,
+      {double temperature = 0.0, double humidity = 0.0}) {
+    // Reset previous data
+    reset();
 
-  // Assign asset paths based on the provided clothing items
-  for (var item in clothingItems) {
-    if (assetPathMap.containsKey(item)) {
-      switch (item) {
-        case 'hat':
-          hatPath.value = assetPathMap[item]!;
-          break;
-        case 'hottop':
-          hottopPath.value = assetPathMap[item]!;
-          break;
-        case 'coldtop':
-          coldtopPath.value = assetPathMap[item]!;
-          break;
-        case 'hotbottom':
-          hotbottomPath.value = assetPathMap[item]!;
-          break;
-        case 'coldbottom':
-          coldbottomPath.value = assetPathMap[item]!;
-          break;
-        case 'hotshoes':
-          hotshoesPath.value = assetPathMap[item]!;
-          break;
-        case 'coldshoes':
-          coldshoesPath.value = assetPathMap[item]!;
-          break;
-        case 'nohat': // Handle the 'nohat' case
-          nohatPath.value = assetPathMap[item]!;
-          break;
+    // Assign asset paths based on the provided clothing items
+    for (var item in clothingItems) {
+      if (assetPathMap.containsKey(item)) {
+        switch (item) {
+          case 'hat':
+            hatPath.value = assetPathMap[item]!;
+            break;
+          case 'hottop':
+            hottopPath.value = assetPathMap[item]!;
+            break;
+          case 'coldtop':
+            coldtopPath.value = assetPathMap[item]!;
+            break;
+          case 'hotbottom':
+            hotbottomPath.value = assetPathMap[item]!;
+            break;
+          case 'coldbottom':
+            coldbottomPath.value = assetPathMap[item]!;
+            break;
+          case 'hotshoes':
+            hotshoesPath.value = assetPathMap[item]!;
+            break;
+          case 'coldshoes':
+            coldshoesPath.value = assetPathMap[item]!;
+            break;
+          case 'nohat': // Handle the 'nohat' case
+            nohatPath.value = assetPathMap[item]!;
+            break;
+        }
       }
     }
+    // Update temperature and humidity
+    this.temperature.value = temperature;
+    this.humidity.value = humidity;
   }
-  this.temperature.value = temperature; // Use 'this' to refer to the instance variable
-}
 }

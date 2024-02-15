@@ -21,7 +21,18 @@ class HomepageView extends StatelessWidget {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('ClimaCloset'),
+        title: Text(
+          'ClimaCloset',
+          style: const TextStyle(
+            fontSize: 20, // Adjust the font size as needed
+            fontWeight: FontWeight.bold, // Make the text bold
+            color: Colors.white, // Change the text color to white
+          ),
+        ),
+        backgroundColor: Color.fromARGB(
+            255, 89, 149, 199), // Change the background color of the app bar
+        elevation: 0, // Remove the shadow below the app bar
+
         actions: [
           // Add refresh button
           IconButton(
@@ -47,7 +58,8 @@ class HomepageView extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                    "assets/background_image.jpg"), // Replace "assets/background_image.jpg" with your image path
+                  "assets/background_image.jpg",
+                ), // Replace "assets/background_image.jpg" with your image path
                 fit: BoxFit.cover,
               ),
             ),
@@ -61,127 +73,95 @@ class HomepageView extends StatelessWidget {
                 padding: const EdgeInsets.all(20.0),
                 child: ListView(
                   children: [
-                    // Display Clothing Items and Temperature in a Table
-                    Table(
-                      columnWidths: {
-                        0: FlexColumnWidth(1),
-                        1: FlexColumnWidth(1),
-                      },
+                    // Display Temperature
+                    Stack(
                       children: [
-                        TableRow(
-                          children: [
-                            // Display Hat or Jacket
-                            Container(
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: Image.asset(
-                                  controller.model.hatPath.value.isNotEmpty
-                                      ? controller.model.hatPath.value
-                                      : controller.model.nohatPath.value,
-                                  fit: BoxFit.contain,
+                        // Your image
+                        Image.asset(
+                          'assets/cloud.jpg',
+                          fit: BoxFit.cover,
+                        ),
+                        // Overlaying text
+                        Positioned(
+                          top: 50,
+                          left: (MediaQuery.of(context).size.width - 315) / 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'FASHION FORECAST',
+                                style: const TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                  color: Colors.blue,
                                 ),
                               ),
-                            ),
-                            // Display Temperature
-                            Stack(
-                              children: [
-                                // Your image
-                                Image.asset(
-                                  'assets/cloud.jpg',
-                                  fit:
-                                      BoxFit.cover, // Adjust this to your needs
-                                ),
-                                // Overlaying text
-                                Positioned(
-                                  top: 20, // Adjust position vertically
-                                  left: (MediaQuery.of(context).size.width -
-                                          375) /
-                                      2, // Center horizontally // Adjust position horizontally
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'FASHION FORECAST',
-                                        style: const TextStyle(
-                                          fontFamily:
-                                              'Poppins', // Set font family
-                                          fontWeight: FontWeight.bold,
-                                          fontSize:
-                                              14, // Adjust font size as needed
-                                          color:
-                                              Colors.blue, // Adjust text color
-                                        ),
-                                      ),
-                                      SizedBox(
-                                          height:
-                                              5), // Adjust spacing between text elements
-                                      Text(
-                                        'Temperature: ${controller.model.temperature.value}',
-                                        style: const TextStyle(
-                                          fontFamily:
-                                              'Poppins', // Set font family
-                                          fontSize:
-                                              16, // Adjust font size as needed
-                                          color:
-                                              Colors.black, // Adjust text color
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                              SizedBox(height: 5),
+                              Obx(() => Text(
+                                    'Temperature: ${controller.model.temperature.value}',
+                                    style: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  )),
+                              Obx(() => Text(
+                                    'Humidity: ${controller.model.humidity.value}',
+                                    style: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                  )),
+                            ],
+                          ),
                         ),
-                        TableRow(
-                          children: [
-                            // Display Cold Top
-                            AspectRatio(
-                              aspectRatio: 1,
-                              child: Image.asset(
+                      ],
+                    ),
+                    // Display Clothing Items in a Vertical List
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(
+                          width: 200, // Adjust the width as needed
+                          height: 200, // Adjust the height as needed
+                          child: _buildClothingItem(
+                            imagePath: controller.model.hatPath.value.isNotEmpty
+                                ? controller.model.hatPath.value
+                                : controller.model.nohatPath.value,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 200, // Adjust the width as needed
+                          height: 200, // Adjust the height as needed
+                          child: _buildClothingItem(
+                            imagePath:
                                 controller.model.coldtopPath.value.isNotEmpty
                                     ? controller.model.coldtopPath.value
                                     : controller.model.hottopPath.value,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            // Empty cell for alignment
-                            SizedBox(),
-                          ],
+                          ),
                         ),
-                        TableRow(
-                          children: [
-                            // Display Hot Bottom or Cold Bottom
-                            AspectRatio(
-                              aspectRatio: 1,
-                              child: Image.asset(
+                        SizedBox(
+                          width: 200, // Adjust the width as needed
+                          height: 200, // Adjust the height as needed
+                          child: _buildClothingItem(
+                            imagePath:
                                 controller.model.hotbottomPath.value.isNotEmpty
                                     ? controller.model.hotbottomPath.value
                                     : controller.model.coldbottomPath.value,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            // Empty cell for alignment
-                            SizedBox(),
-                          ],
+                          ),
                         ),
-                        TableRow(
-                          children: [
-                            // Display Hot Shoes or Cold Shoes
-                            AspectRatio(
-                              aspectRatio: 1,
-                              child: Image.asset(
+                        SizedBox(
+                          width: 200, // Adjust the width as needed
+                          height: 200, // Adjust the height as needed
+                          child: _buildClothingItem(
+                            imagePath:
                                 controller.model.hotshoesPath.value.isNotEmpty
                                     ? controller.model.hotshoesPath.value
                                     : controller.model.coldshoesPath.value,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            // Empty cell for alignment
-                            SizedBox(),
-                          ],
-                        ),
+                          ),
+                        )
                       ],
                     ),
                   ],
@@ -190,6 +170,19 @@ class HomepageView extends StatelessWidget {
             }
           }),
         ],
+      ),
+    );
+  }
+
+  Widget _buildClothingItem({required String imagePath}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Image.asset(
+          imagePath,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }
