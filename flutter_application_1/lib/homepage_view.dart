@@ -29,8 +29,7 @@ class HomepageView extends StatelessWidget {
             color: Colors.white, // Change the text color to white
           ),
         ),
-        backgroundColor: Color.fromARGB(
-            255, 89, 149, 199), // Change the background color of the app bar
+        backgroundColor: Color.fromARGB(255, 32, 117, 113), // Change the background color of the app bar
         elevation: 0, // Remove the shadow below the app bar
 
         actions: [
@@ -94,7 +93,7 @@ class HomepageView extends StatelessWidget {
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.bold,
                                   fontSize: 25,
-                                  color: Colors.blue,
+                                  color: Color.fromARGB(255, 32, 117, 113),
                                 ),
                               ),
                               SizedBox(height: 5),
@@ -179,9 +178,19 @@ class HomepageView extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: AspectRatio(
         aspectRatio: 1,
-        child: Image.asset(
-          imagePath,
-          fit: BoxFit.contain,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+            color: Color.fromARGB(255, 32, 117, 113), // Set the border color
+            width: 2.0, // Set the border width
+            ),
+          ),
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );
