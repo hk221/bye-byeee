@@ -118,6 +118,17 @@ class HomepageView extends StatelessWidget {
                         ),
                       ],
                     ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        'Based off the weather, this outfit suits your needs:',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                     // Display Clothing Items in a Vertical List
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
