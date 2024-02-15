@@ -93,27 +93,27 @@ class HomepageController extends GetxController {
       print('Disconnected from broker');
     }
   }
+
   Map<String, dynamic> decodeJson(String payload) {
-  try {
-    var data = jsonDecode(payload);
-    if (data != null && data is Map<String, dynamic>) {
-      double temperature = double.tryParse(data['temperature'].toString()) ?? 0.0;
-      double humidity = double.tryParse(data['humidity'].toString()) ?? 0.0;
-      List<String> clothingItems = data.values.cast<String>().toList();
-      print('Temperature: $temperature');
-      print('Humidity: $humidity');
-      print(clothingItems);
-      return data; // Return the decoded data map
-    } else {
-      throw FormatException('Invalid JSON format');
-    }
-  } catch (e) {
-    print('Error decoding JSON: $e');
-    return {}; // Return an empty map in case of error
+    try {
+      var data = jsonDecode(payload);
+      if (data != null && data is Map<String, dynamic>) {
+        double temperature =
+            double.tryParse(data['temperature'].toString()) ?? 0.0;
+        double humidity = double.tryParse(data['humidity'].toString()) ?? 0.0;
+        List<String> clothingItems = data.values.cast<String>().toList();
+        print('Temperature: $temperature');
+        print('Humidity: $humidity');
+        print(clothingItems);
+        return data; // Return the decoded data map
+      } else {
+        throw FormatException('Invalid JSON format');
+      }
+    } catch (e) {
+      print('Error decoding JSON: $e');
+      return {}; // Return an empty map in case of error
     }
   }
-
-
 
   void disconnectFromBroker() {
     model.isLoading.value = false;
@@ -140,6 +140,7 @@ class HomepageController extends GetxController {
       addImageCallback(result.files.first.path ?? "", "hat");
     }
   }
+
   Future<String?> addImageToAssets(String imagePath) async {
     // Move the selected image file to the assets folder
     String? assetPath = await moveFileToAssets(imagePath);
@@ -149,7 +150,8 @@ class HomepageController extends GetxController {
   Future<String?> moveFileToAssets(String filePath) async {
     try {
       // Specify the destination directory within the assets folder
-      Directory destinationDirectory = Directory('assets');
+      Directory destinationDirectory =
+          Directory('assets');
       // Create the directory if it doesn't exist
       if (!await destinationDirectory.exists()) {
         await destinationDirectory.create(recursive: true);

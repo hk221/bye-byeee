@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_application_1/homepage_controller.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 class HomepageView extends StatelessWidget {
   HomepageView({Key? key}) : super(key: key);
@@ -207,79 +209,106 @@ class HomepageView extends StatelessWidget {
       )
     );
   }
-  
+  Future<void> addImageToPubspec(String imagePath) async {
+  // Read the current content of the pubspec.yaml file
+  var file = File('pubspec.yaml');
+  var lines = await file.readAsLines();
+
+  // Find the index of the assets section in the pubspec.yaml content
+  var assetsIndex = lines.indexWhere((line) => line.trim() == 'assets:');
+  if (assetsIndex != -1) {
+    // Check if the image path already exists in the assets section
+    var imagePathInAssets = lines.indexWhere((line) => line.trim() == '- $imagePath');
+    if (imagePathInAssets == -1) {
+      // Add the new image path to the assets section
+      lines.insert(assetsIndex + 1, '  - $imagePath');
+
+      // Write the updated content back to the pubspec.yaml file
+      await file.writeAsString(lines.join('\n'));
+      print('Image path added to pubspec.yaml: $imagePath');
+    } else {
+      print('Image path already exists in pubspec.yaml: $imagePath');
+    }
+  } else {
+    print('assets section not found in pubspec.yaml');
+  }
+  }
 
   Future<void> _pickAndAddImage(BuildContext context) async {
-    final HomepageController controller = Get.find<HomepageController>();
-    // Pick an image from device
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(type: FileType.image);
+  final HomepageController controller = Get.find<HomepageController>();
+  // Pick an image from device
+  FilePickerResult? result =
+      await FilePicker.platform.pickFiles(type: FileType.image);
 
-    if (result != null) {
-      // Show dialog to select category
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: Text('Select Category'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Center(
-                child: DropdownButton<String>(
-                  value: 'hat', // Default category
-                  items: [
-                    // Add dropdown or radio buttons to select category
-                    // For simplicity, using a dropdown with hardcoded categories
-                    DropdownMenuItem(
-                      child: const Text('Hat'),
-                      value: 'hat',
-                    ),
-                    DropdownMenuItem(
-                      child: const Text('Cold Top'),
-                      value: 'coldtop',
-                    ),
-                    DropdownMenuItem(
-                      child: const Text('Hot Top'),
-                      value: 'hottop',
-                    ),
-                    DropdownMenuItem(
-                      child: const Text('Cold Bottom'),
-                      value: 'coldbottom',
-                    ),
-                    DropdownMenuItem(
-                      child: const Text('Hot Bottom'),
-                      value: 'hotbottom',
-                    ),
-                    DropdownMenuItem(
-                      child: const Text('Cold Shoes'),
-                      value: 'coldshoes',
-                    ),
-                    DropdownMenuItem(
-                      child: const Text('Hot Shoes'),
-                      value: 'hotshoes',
-                    ),
-                  ],
-                  onChanged: (String? value) async {
-                    if (value != null) {
-                      // Check if value is not null
-                      // Move the selected image file to the assets folder
-                      String? imagePath = result.files.first.path;
-                      String? assetPath = imagePath != null
-                          ? await controller.addImageToAssets(imagePath)
-                          : null;
-                      if (assetPath != null) {
-                        // Update the assetPathMap with the new image path
-                        controller.addImageToCategory(assetPath, value);
-                      }
+  if (result != null) {
+    // Show dialog to select category
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('Select Category'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: DropdownButton<String>(
+                value: 'hat', // Default category
+                items: [
+                  // Add dropdown or radio buttons to select category
+                  // For simplicity, using a dropdown with hardcoded categories
+                  DropdownMenuItem(
+                    child: const Text('Hat'),
+                    value: 'hat',
+                  ),
+                  DropdownMenuItem(
+                    child: const Text('Cold Top'),
+                    value: 'coldtop',
+                  ),
+                  DropdownMenuItem(
+                    child: const Text('Hot Top'),
+                    value: 'hottop',
+                  ),
+                  DropdownMenuItem(
+                    child: const Text('Cold Bottom'),
+                    value: 'coldbottom',
+                  ),
+                  DropdownMenuItem(
+                    child: const Text('Hot Bottom'),
+                    value: 'hotbottom',
+                  ),
+                  DropdownMenuItem(
+                    child: const Text('Cold Shoes'),
+                    value: 'coldshoes',
+                  ),
+                  DropdownMenuItem(
+                    child: const Text('Hot Shoes'),
+                    value: 'hotshoes',
+                  ),
+                ],
+                onChanged: (String? value) async {
+                  if (value != null) {
+                    // Check if value is not null
+                    // Move the selected image file to the assets folder
+                    String? imagePath = result.files.first.path;
+                    String? assetPath = imagePath != null
+                        ? await controller.addImageToAssets(imagePath)
+                        : null;
+                    if (assetPath != null) {
+                      // Call addImageToPubspec to add the new image path to pubspec.yaml
+                      await addImageToPubspec(assetPath);
+
+                      // Update the assetPathMap with the new image path
+                      controller.addImageToCategory(assetPath, value);
                     }
-                    Navigator.pop(context); // Close the dialog
-                  },
-                ),
+                  }
+                  Navigator.pop(context); // Close the dialog
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
+}
+
 }
