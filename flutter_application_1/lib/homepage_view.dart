@@ -193,7 +193,7 @@ class HomepageView extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border.all(
             color: Color.fromARGB(255, 32, 117, 113), // Set the border color
-            width: 2.0, // Set the border width
+            width: 1.0, // Set the border width
             ),
           ),
         child: AspectRatio(
