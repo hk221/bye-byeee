@@ -301,6 +301,14 @@ class HomepageView extends StatelessWidget {
                       child: const Text('Hot Shoes'),
                       value: 'hotshoes',
                     ),
+                    DropdownMenuItem(
+                      child: const Text('Puffer'),
+                      value: 'puffer',
+                    ),
+                    DropdownMenuItem(
+                      child: const Text('No Hat'),
+                      value: 'nohat',
+                    ),
                   ],
                   onChanged: (String? value) async {
                     if (value != null) {
