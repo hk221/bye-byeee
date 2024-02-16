@@ -30,7 +30,7 @@ class HomepageModel {
 
   late RxDouble temperature;
   late RxDouble humidity;
-  late RxDouble airPressure;
+  late RxString airPressure;
 
   RxBool isLoading = true.obs;
 
@@ -48,7 +48,7 @@ class HomepageModel {
     nopufferPath = ''.obs;
     temperature = 0.0.obs;
     humidity = 0.0.obs;
-    airPressure = 0.0.obs;
+    airPressure = ''.obs;
   }
 
   void reset() {
@@ -64,14 +64,14 @@ class HomepageModel {
     nopufferPath.value = '';
     temperature.value = 0.0;
     humidity.value = 0.0;
-    airPressure.value = 0.0;
+    airPressure.value = '';
   }
 
   // Method to set data for clothing items
   void setData(List<String> clothingItems,
       {double temperature = 0.0,
       double humidity = 0.0,
-      double airPressure = 0.0}) {
+      String airPressure = ''}) {
     // Reset previous data
     reset();
 

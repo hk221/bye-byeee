@@ -76,12 +76,11 @@ class HomepageController extends GetxController {
           double temperature =
               double.parse(decodedData['temperature'].toString());
           double humidity = double.parse(decodedData['humidity'].toString());
-          double airPressure = double.parse(
-              decodedData['airPressure'].toString()); // Add humidity parsing
+          String airPressure = decodedData['airPressure'].toString();
           model.setData(clothingItems,
               temperature: temperature,
               humidity: humidity,
-              airPressure: airPressure); // Pass humidity to setData
+              airPressure: airPressure); // Pass airPressure as string
         } else {
           print('Error: Empty or null decoded data');
         }
@@ -103,12 +102,11 @@ class HomepageController extends GetxController {
         double temperature =
             double.tryParse(data['temperature'].toString()) ?? 0.0;
         double humidity = double.tryParse(data['humidity'].toString()) ?? 0.0;
-        double airPressure =
-            double.tryParse(data['airPressure'].toString()) ?? 0.0;
+        String airPressure = data['airPressure'].toString();
         List<String> clothingItems = data.values.cast<String>().toList();
         print('Temperature: $temperature');
         print('Humidity: $humidity');
-        print('airPressure: $airPressure');
+        print('Air Pressure: $airPressure');
         print(clothingItems);
         return data; // Return the decoded data map
       } else {
@@ -132,6 +130,8 @@ class HomepageController extends GetxController {
     connectToBroker();
     model.isLoading.value = false;
   }
+
+  // Method to handle picking and adding image, accepts a callback for UI-related tasks
 
   // Method to handle picking and adding image, accepts a callback for UI-related tasks
   Future<void> pickAndAddImage(

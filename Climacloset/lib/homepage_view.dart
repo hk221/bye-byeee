@@ -31,7 +31,8 @@ class HomepageView extends StatelessWidget {
             color: Colors.white, // Change the text color to white
           ),
         ),
-        backgroundColor: Color.fromARGB(255, 32, 117, 113), // Change the background color of the app bar
+        backgroundColor: Color.fromARGB(
+            255, 32, 117, 113), // Change the background color of the app bar
         elevation: 0, // Remove the shadow below the app bar
 
         actions: [
