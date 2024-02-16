@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "936591348055",
+    "firebase_url": "https://smart-wardrobe-9f738-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "smart-wardrobe-9f738",
+    "storage_bucket": "smart-wardrobe-9f738.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936591348055:android:d813824db2901233b82e12",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936591348055-vqjiautcmq9lidhfl6vnccl780skqpps.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMmSPNGQQmmhOfkWkLhLO3oSJiYBoKY7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "936591348055-vqjiautcmq9lidhfl6vnccl780skqpps.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
