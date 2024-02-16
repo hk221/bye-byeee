@@ -11,7 +11,7 @@ from google.auth.transport.requests import AuthorizedSession
 
 loopcounter = 0
 while loopcounter < 20:
-    #--------------------SENSOR CODE-------------------------------------------#
+    #--------------------BMP 280 SENSOR CODE-------------------------------------------#
 
     # bmp280.py
 # Simple python script to read out the temperature of the
@@ -149,7 +149,7 @@ while loopcounter < 20:
 
 
 
-    # --------------------SENSOR CODE-------------------------------------------#
+    # --------------------Si7021 SENSOR CODE-------------------------------------------#
     si7021_ADD = 0x40  # I2C bus address for the sensor
     si7021_READ_TEMPERATURE = 0xF3  # Command to read temperature
     si7021_READ_HUMIDITY = 0xF5  # Command to read humidity
