@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
-import 'package:flutter_application_1/firebase_image.dart';
 
 class HomepageController extends GetxController {
   final HomepageModel model = HomepageModel();
@@ -76,13 +75,11 @@ class HomepageController extends GetxController {
           List<String> clothingItems = decodedData.keys.toList();
           double temperature =
               double.parse(decodedData['temperature'].toString());
-          double humidity = double.parse(decodedData['humidity'].toString());
-          double airPressure = double.parse(
-              decodedData['airPressure'].toString()); // Add humidity parsing
+          double humidity = double.parse(
+              decodedData['humidity'].toString()); // Add humidity parsing
           model.setData(clothingItems,
               temperature: temperature,
-              humidity: humidity,
-              airPressure: airPressure); // Pass humidity to setData
+              humidity: humidity); // Pass humidity to setData
         } else {
           print('Error: Empty or null decoded data');
         }
@@ -96,30 +93,27 @@ class HomepageController extends GetxController {
       print('Disconnected from broker');
     }
   }
-
   Map<String, dynamic> decodeJson(String payload) {
-    try {
-      var data = jsonDecode(payload);
-      if (data != null && data is Map<String, dynamic>) {
-        double temperature =
-            double.tryParse(data['temperature'].toString()) ?? 0.0;
-        double humidity = double.tryParse(data['humidity'].toString()) ?? 0.0;
-        double airPressure =
-            double.tryParse(data['airPressure'].toString()) ?? 0.0;
-        List<String> clothingItems = data.values.cast<String>().toList();
-        print('Temperature: $temperature');
-        print('Humidity: $humidity');
-        print('Air Pressure: $airPressure');
-        print(clothingItems);
-        return data; // Return the decoded data map
-      } else {
-        throw FormatException('Invalid JSON format');
-      }
-    } catch (e) {
-      print('Error decoding JSON: $e');
-      return {}; // Return an empty map in case of error
+  try {
+    var data = jsonDecode(payload);
+    if (data != null && data is Map<String, dynamic>) {
+      double temperature = double.tryParse(data['temperature'].toString()) ?? 0.0;
+      double humidity = double.tryParse(data['humidity'].toString()) ?? 0.0;
+      List<String> clothingItems = data.values.cast<String>().toList();
+      print('Temperature: $temperature');
+      print('Humidity: $humidity');
+      print(clothingItems);
+      return data; // Return the decoded data map
+    } else {
+      throw FormatException('Invalid JSON format');
+    }
+  } catch (e) {
+    print('Error decoding JSON: $e');
+    return {}; // Return an empty map in case of error
     }
   }
+
+
 
   void disconnectFromBroker() {
     model.isLoading.value = false;
@@ -146,7 +140,6 @@ class HomepageController extends GetxController {
       addImageCallback(result.files.first.path ?? "", "hat");
     }
   }
-
   Future<String?> addImageToAssets(String imagePath) async {
     // Move the selected image file to the assets folder
     String? assetPath = await moveFileToAssets(imagePath);
@@ -179,6 +172,17 @@ class HomepageController extends GetxController {
     } catch (e) {
       print('Error moving file: $e');
       return null;
+    }
+  }
+
+  void addImageToCategory(String imagePath, String category) {
+    // Check if the category already exists in the assetPathMap
+    if (model.assetPathMap.containsKey(category)) {
+      // Category exists, update the image path
+      model.assetPathMap[category] = imagePath;
+    } else {
+      // Category doesn't exist, add a new entry
+      model.assetPathMap.addAll({category: imagePath});
     }
   }
 }
